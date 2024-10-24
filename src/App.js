@@ -49,6 +49,7 @@ const App = () => {
     } else {
       dispatch({ type: "NO_ALBUM_ADD" });
     }
+    setAlbumName("");
   };
 
   const closeNotification = () => {
