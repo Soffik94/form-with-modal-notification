@@ -1,5 +1,13 @@
 import "./Modal.css";
-const Modal = ({ notifContent }) => {
+import { useEffect } from "react";
+
+const Modal = ({ notifContent, closeNotif }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      closeNotif();
+    }, 2000);
+  });
+
   return <div>{notifContent}</div>;
 };
 
