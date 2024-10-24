@@ -57,7 +57,10 @@ const App = () => {
   };
 
   return (
-    <section>
+    <section
+      className="
+    form"
+    >
       {state.showNotification && (
         <Modal
           notifContent={state.notificationContent}
@@ -66,18 +69,19 @@ const App = () => {
       )}
       <form onSubmit={submitHandler}>
         <input
+          className="text-input"
           type="text"
           value={albumName}
           onChange={(event) => {
             setAlbumName(event.target.value);
           }}
         />
-        <input type="submit" value="přidat" />
+        <input className="submit-input" type="submit" value="přidat" />
       </form>
       {state.albums.map((oneAlbum) => {
         const { id, name } = oneAlbum;
         return (
-          <div key={oneAlbum.id}>
+          <div key={oneAlbum.id} className="all-albums">
             {name}
             <button
               onClick={() => {
