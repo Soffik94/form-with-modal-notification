@@ -2,7 +2,17 @@ import Modal from "./components/Modal";
 import data from "./data";
 import { useState, useReducer } from "react";
 
-const reducer = () => {};
+const reducer = (state, action) => {
+  if (action.type === "ADD_ALBUM") {
+    const newAlbums = [...state.albums, action.payload];
+    return {
+      ...state,
+      albums: newAlbums,
+      showNotification: true,
+      notificationContent: "Album přidáno",
+    };
+  }
+};
 
 const defaultState = {
   albums: [],
@@ -12,19 +22,23 @@ const defaultState = {
 
 const App = () => {
   const [albumName, setAlbumName] = useState("");
-  const [state, dispatch] = useReducer(reducer, defaultState); //state se pojí s defaultState a reducer s dispatch
+  const [state, dispatch] = useReducer(reducer, defaultState);
 
   const submitHandler = (event) => {
     event.preventDefault();
 
     if (albumName) {
+      const newAlbumName = { id: new Date().getTime(), name: albumName };
+      dispatch({ type: "ADD_ALBUM", payload: newAlbumName });
     } else {
     }
   };
 
   return (
     <section>
-      {state.showNotification && <Modal />}
+      {state.showNotification && (
+        <Modal notifContent={state.notificationContent} />
+      )}
       <form onSubmit={submitHandler}>
         <input
           type="text"

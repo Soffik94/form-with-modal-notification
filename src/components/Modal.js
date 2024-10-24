@@ -1,6 +1,6 @@
 import "./Modal.css";
-const Modal = () => {
-  return <div>Modal</div>;
+const Modal = ({ notifContent }) => {
+  return <div>{notifContent}</div>;
 };
 
 export default Modal;
