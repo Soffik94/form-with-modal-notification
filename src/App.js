@@ -1,55 +1,60 @@
 import Modal from "./components/Modal";
-import albums from "./data";
-import data from "./data";
 import { useState, useReducer } from "react";
-
-const reducer = (state, action) => {
-  if (action.type === "ADD_ALBUM") {
-    const newAlbums = [...state.albums, action.payload];
-    return {
-      ...state,
-      albums: newAlbums,
-      showNotification: true,
-      notificationContent: "Album přidáno",
-    };
-  }
-  if (action.type === "NO_ALBUM_ADD") {
-    return {
-      ...state,
-      showNotification: true,
-      notificationContent: "Zadej název alba",
-    };
-  }
-  if (action.type === "CLOSE_NOTIFICATION")
-    return { ...state, showNotification: false };
-  if (action.type === "DELETE_MOVIE") {
-    const filteredAlbums = state.albums.filter((oneAlbum) => {
-      return oneAlbum.id !== action.payload;
-    });
-    return { ...state, albums: filteredAlbums };
-  }
-};
-
-const defaultState = {
-  albums: [],
-  showNotification: false,
-  notificationContent: "",
-};
 
 const App = () => {
   const [albumName, setAlbumName] = useState("");
+
+  // Default state of reducer
+  const defaultState = {
+    albums: [],
+    showNotification: false,
+    notificationContent: "",
+  };
+
+  // Reducer definition
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "ADD_ALBUM":
+        return {
+          ...state,
+          albums: [...state.albums, action.payload],
+          showNotification: true,
+          notificationContent: "Album přidáno",
+        };
+      case "NO_ALBUM_ADD":
+        return {
+          ...state,
+          showNotification: true,
+          notificationContent: "Zadej název alba",
+        };
+      case "CLOSE_NOTIFICATION":
+        return {
+          ...state,
+          showNotification: false,
+        };
+      case "DELETE_ALBUM":
+        return {
+          ...state,
+          albums: state.albums.filter((album) => album.id !== action.payload),
+        };
+      default:
+        return state;
+    }
+  };
+
+  // useReducer Hook
   const [state, dispatch] = useReducer(reducer, defaultState);
 
   const submitHandler = (event) => {
     event.preventDefault();
 
     if (albumName) {
-      const newAlbumName = { id: new Date().getTime(), name: albumName };
-      dispatch({ type: "ADD_ALBUM", payload: newAlbumName });
+      const newAlbum = { id: new Date().getTime(), name: albumName };
+      dispatch({ type: "ADD_ALBUM", payload: newAlbum });
+      setAlbumName("");
     } else {
       dispatch({ type: "NO_ALBUM_ADD" });
     }
-    setAlbumName("");
   };
 
   const closeNotification = () => {
@@ -57,10 +62,7 @@ const App = () => {
   };
 
   return (
-    <section
-      className="
-    form"
-    >
+    <section className="form">
       {state.showNotification && (
         <Modal
           notifContent={state.notificationContent}
@@ -72,27 +74,22 @@ const App = () => {
           className="text-input"
           type="text"
           value={albumName}
-          onChange={(event) => {
-            setAlbumName(event.target.value);
-          }}
+          onChange={(event) => setAlbumName(event.target.value)}
         />
         <input className="submit-input" type="submit" value="přidat" />
       </form>
-      {state.albums.map((oneAlbum) => {
-        const { id, name } = oneAlbum;
-        return (
-          <div key={oneAlbum.id} className="all-albums">
-            {name}
-            <button
-              onClick={() => {
-                dispatch({ type: "DELETE_MOVIE", payload: oneAlbum.id });
-              }}
-            >
-              Smazat
-            </button>
-          </div>
-        );
-      })}
+      {state.albums.map((album) => (
+        <div key={album.id} className="all-albums">
+          {album.name}
+          <button
+            onClick={() =>
+              dispatch({ type: "DELETE_ALBUM", payload: album.id })
+            }
+          >
+            Smazat
+          </button>
+        </div>
+      ))}
     </section>
   );
 };
